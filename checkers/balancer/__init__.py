@@ -17,10 +17,9 @@ with open(os.path.dirname(__file__) + "/../erc20.abi.json") as f:
     erc20_json = json.load(f)
 
 ETH_DECIMALS = 18
-UNISWAP_FACTORY_ADDRESS = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95';
 pools = {
-            'MKR/WETH': {
-                'name': 'MKR/WETH',
+            'MKR60/WETH40': {
+                'name': 'MKR60/WETH40',
                 'balancer_contract': '0x9866772A9BdB4Dc9d2c5a4753e8658B8B0Ca1fC3',
                 'tokens': [
                     {
@@ -35,8 +34,8 @@ pools = {
                     },
                 ],
             },
-            'BAL/WETH': {
-                'name': 'BAL/WETH',
+            'BAL80/WETH20': {
+                'name': 'BAL80/WETH20',
                 'balancer_contract': '0x59A19D8c652FA0284f44113D0ff9aBa70bd46fB4',
                 'tokens': [
                     {
@@ -51,8 +50,24 @@ pools = {
                     },
                 ],
             },
-            'WBTC/WETH': {
-                'name': 'WBTC/WETH',
+            'BAL50/WETH50': {
+                'name': 'BAL50/WETH50',
+                'balancer_contract': '0x6b9887422E2a4aE11577F59EA9c01a6C998752E2',
+                'tokens': [
+                    {
+                        'name': 'WETH',
+                        'address': '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+                        'share': 0.5
+                    },
+                    {
+                        'name': 'BAL',
+                        'address': '0xba100000625a3754423978a60c9317c58a424e3D',
+                        'share': 0.5
+                    },
+                ],
+            },
+            'WBTC50/WETH50': {
+                'name': 'WBTC50/WETH50',
                 'balancer_contract': '0x1efF8aF5D577060BA4ac8A29A13525bb0Ee2A3D5',
                 'tokens': [
                     {
