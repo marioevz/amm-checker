@@ -1,9 +1,11 @@
 #!/usr/bin/env python
+from web3 import Web3
 import os
 import json
 import sys
+import re
 
-def loadCheckers(provider_uri):
+def loadCheckers(_w3):
     res = {}
     lst = os.listdir(os.path.join(os.path.dirname(__file__), "amm-checker", "checkers"))
     dir = []
@@ -14,7 +16,7 @@ def loadCheckers(provider_uri):
     sys.path.append(os.path.dirname(__file__))
     for d in dir:
         res[d] = __import__("amm-checker.checkers." + d, fromlist = ["*"])
-        res[d].init(provider_uri)
+        res[d].init(_w3)
     return res
 
 def loadConfig():
@@ -28,7 +30,11 @@ def loadConfig():
     return {}
 
 cfg = loadConfig()
-checkers = loadCheckers(cfg["WEB3_PROVIDER_URI"])
+if "WEB3_PROVIDER_URI" not in cfg:
+    raise Exception("No WEB3 provider URI in configuration")
+
+w3 = Web3(Web3.HTTPProvider(cfg["WEB3_PROVIDER_URI"], request_kwargs={'timeout': 60}))
+checkers = loadCheckers(w3)
 
 checkaccounts = cfg["checkaccounts"]
 

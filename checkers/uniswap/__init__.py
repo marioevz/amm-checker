@@ -1,14 +1,13 @@
 #!/usr/bin/python
-from web3 import Web3
 import json
 import os
 import sys
 import datetime
 
 checker_name = 'Uniswap'
-def init(provider_uri):
+def init(_w3):
     global w3
-    w3 = Web3(Web3.HTTPProvider(provider_uri, request_kwargs={'timeout': 60}))
+    w3 = _w3
     syncObj = w3.eth.syncing
 
     if not isinstance(syncObj, bool):
