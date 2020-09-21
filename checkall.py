@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from web3 import Web3
 import os
 import json
@@ -7,30 +7,32 @@ import re
 
 def loadCheckers(_w3):
     res = {}
-    lst = os.listdir(os.path.join(os.path.dirname(__file__), "amm-checker", "checkers"))
+    lst = os.listdir(os.path.join(os.path.dirname(__file__), "amm-checkers"))
     dir = []
     for d in lst:
-        s = os.path.abspath(os.path.join(os.path.dirname(__file__), "amm-checker", "checkers")) + os.sep + d
+        s = os.path.abspath(os.path.join(os.path.dirname(__file__), "amm-checkers")) + os.sep + d
         if os.path.isdir(s) and os.path.exists(s + os.sep + "__init__.py"):
             dir.append(d)
     sys.path.append(os.path.dirname(__file__))
     for d in dir:
-        res[d] = __import__("amm-checker.checkers." + d, fromlist = ["*"])
+        res[d] = __import__("amm-checkers." + d, fromlist = ["*"])
         res[d].init(_w3)
     return res
 
 def loadConfig():
     for d in os.curdir, os.path.expanduser("~"):
         try:
-            with open(d + os.sep + "amm-checker.conf") as json_file:
+            fname = os.path.join(d, "amm-checker.conf")
+            with open(fname) as json_file:
                 data = json.load(json_file)
                 return data
-        except:
-            pass
+        except Exception as e:
+            print(e)
     return {}
 
 cfg = loadConfig()
 if "WEB3_PROVIDER_URI" not in cfg:
+    print(cfg)
     raise Exception("No WEB3 provider URI in configuration")
 
 w3 = Web3(Web3.HTTPProvider(cfg["WEB3_PROVIDER_URI"], request_kwargs={'timeout': 60}))

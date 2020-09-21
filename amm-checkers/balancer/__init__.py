@@ -18,6 +18,22 @@ with open(os.path.dirname(__file__) + "/../erc20.abi.json") as f:
 
 ETH_DECIMALS = 18
 pools = {
+            'MKR63/WETH37': {
+                'name': 'MKR63/WETH37',
+                'balancer_contract': '0xe0E6B25b22173849668c85E06BC2ce1f69BaFf8c',
+                'tokens': [
+                    {
+                        'name': 'WETH',
+                        'address': '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+                        'share': 0.37
+                    },
+                    {
+                        'name': 'MKR',
+                        'address': '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2',
+                        'share': 0.63
+                    },
+                ],
+            },
             'MKR60/WETH40': {
                 'name': 'MKR60/WETH40',
                 'balancer_contract': '0x9866772A9BdB4Dc9d2c5a4753e8658B8B0Ca1fC3',
