@@ -69,10 +69,10 @@ def get_token_info(name, user):
     
     return eth_share, token_share
         
-def get_info_string(name, user):
+def get_info_string(name, user, t=datetime.datetime.now()):
     eth_share, token_share = get_token_info(name.upper(), user)
-    ret_string = "%s\t%f %s + %f %s" % (str(datetime.datetime.now()),eth_share, 'ETH', token_share, token)
-    return ret_string
+    ret_string = "%s\t%f %s + %f %s" % (str(t),eth_share, 'ETH', token_share, token)
+    return [ret_string]
 
 def main():
     args = sys.argv[:]

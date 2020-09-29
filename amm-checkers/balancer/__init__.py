@@ -68,7 +68,7 @@ pools = {
             },
             'BAL50/WETH50': {
                 'name': 'BAL50/WETH50',
-                'balancer_contract': '0x6b9887422E2a4aE11577F59EA9c01a6C998752E2',
+                'balancer_contract': '0xe867bE952ee17d2D294F2de62b13B9F4aF521e9a',
                 'tokens': [
                     {
                         'name': 'WETH',
@@ -128,10 +128,10 @@ def get_token_info(name, user):
     
     return token_shares
         
-def get_info_string(name, user):
+def get_info_string(name, user, t=datetime.datetime.now()):
     token_shares = get_token_info(name.upper(), user)
-    ret_string = "%s\t%f %s + %f %s" % (str(datetime.datetime.now()), token_shares[0]['share'], token_shares[0]['name'], token_shares[1]['share'], token_shares[1]['name'])
-    return ret_string
+    ret_string = "%s\t%f %s + %f %s" % (str(t), token_shares[0]['share'], token_shares[0]['name'], token_shares[1]['share'], token_shares[1]['name'])
+    return [ret_string]
 
 def main():
     args = sys.argv[:]

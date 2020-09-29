@@ -80,11 +80,10 @@ def get_token_info(name, user):
     
     return token_shares
         
-def get_info_string(name, user):
+def get_info_string(name, user, t=datetime.datetime.now()):
     token_shares = get_token_info(name.upper(), user)
-    ret_string = "%s\t%f %s + %f %s" % (str(datetime.datetime.now()), token_shares[0]['share'], token_shares[0]['name'], token_shares[1]['share'], token_shares[1]['name'])
-    ret_string += "\n"
-    ret_string += "Earnings\t%f %s" % (token_shares[2]['earnings'], token_shares[2]['name'])
+    ret_string = ["%s\t%f %s + %f %s" % (str(t), token_shares[0]['share'], token_shares[0]['name'], token_shares[1]['share'], token_shares[1]['name'])]
+    ret_string.append("Earnings\t%f %s" % (token_shares[2]['earnings'], token_shares[2]['name']))
     return ret_string
 
 def main():

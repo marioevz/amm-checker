@@ -4,6 +4,8 @@ import os
 import json
 import sys
 import re
+import datetime
+from subprocess import Popen, PIPE, STDOUT
 
 def loadCheckers(_w3):
     res = {}
@@ -21,24 +23,30 @@ def loadCheckers(_w3):
 
 def loadConfig():
     for d in os.curdir, os.path.expanduser("~"):
-        try:
+        
             fname = os.path.join(d, "amm-checker.conf")
-            with open(fname) as json_file:
-                data = json.load(json_file)
-                return data
-        except Exception as e:
-            print(e)
+            if os.path.isfile(fname):
+                with open(fname) as json_file:
+                    data = json.load(json_file)
+                    return data
     return {}
 
+def parseConfig(cfg):
+    if "normalize_timestamp" in cfg:
+        cfg["t"] = datetime.datetime.now()
+
 cfg = loadConfig()
-if "WEB3_PROVIDER_URI" not in cfg:
+if "web3_provider_uri" not in cfg:
     print(cfg)
     raise Exception("No WEB3 provider URI in configuration")
 
-w3 = Web3(Web3.HTTPProvider(cfg["WEB3_PROVIDER_URI"], request_kwargs={'timeout': 60}))
+w3 = Web3(Web3.HTTPProvider(cfg["web3_provider_uri"], request_kwargs={'timeout': 60}))
 checkers = loadCheckers(w3)
 
 checkaccounts = cfg["checkaccounts"]
+
+parseConfig(cfg)
+
 
 for chk in checkaccounts:
     if len(checkaccounts[chk]) > 0:
@@ -47,6 +55,18 @@ for chk in checkaccounts:
         if len(checkaccounts[chk][acc]) > 0:
             print(acc)
         for pair in checkaccounts[chk][acc]:
-            ret_str = checkers[chk].get_info_string(pair, acc)
-            print(ret_str)
+            c_cfg = cfg.copy()
+
+            if checkaccounts[chk][acc][pair]:
+                c_cfg = {**c_cfg, **checkaccounts[chk][acc][pair]}
+
+            if c_cfg["t"]:
+                ret_str = checkers[chk].get_info_string(pair, acc, c_cfg["t"])
+            else:
+                ret_str = checkers[chk].get_info_string(pair, acc)
+            
+            print(ret_str[0])
+            if "output" in c_cfg and c_cfg["output"] and c_cfg["output"][0]!="stdout":
+                p = Popen(c_cfg["output"], stdin=PIPE)
+                p.communicate(input=bytes(ret_str[0], 'utf-8'))
 
