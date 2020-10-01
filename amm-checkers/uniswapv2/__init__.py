@@ -8,10 +8,6 @@ checker_name = 'Uniswap V2'
 def init(_w3):
     global w3
     w3 = _w3
-    syncObj = w3.eth.syncing
-
-    if not isinstance(syncObj, bool):
-        raise Exception("Node is syncing")
 
 with open(os.path.dirname(__file__) + "/../erc20.abi.json") as f:
     erc20_json = json.load(f)

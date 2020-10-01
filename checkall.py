@@ -23,7 +23,6 @@ def loadCheckers(_w3):
 
 def loadConfig():
     for d in os.curdir, os.path.expanduser("~"):
-        
             fname = os.path.join(d, "amm-checker.conf")
             if os.path.isfile(fname):
                 with open(fname) as json_file:
@@ -41,6 +40,12 @@ if "web3_provider_uri" not in cfg:
     raise Exception("No WEB3 provider URI in configuration")
 
 w3 = Web3(Web3.HTTPProvider(cfg["web3_provider_uri"], request_kwargs={'timeout': 60}))
+
+syncObj = w3.eth.syncing
+
+if not isinstance(syncObj, bool):
+    raise Exception("Node is syncing")
+
 checkers = loadCheckers(w3)
 
 checkaccounts = cfg["checkaccounts"]
