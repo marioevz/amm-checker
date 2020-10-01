@@ -22,12 +22,21 @@ def loadCheckers(_w3):
     return res
 
 def loadConfig():
-    for d in os.curdir, os.path.expanduser("~"):
-            fname = os.path.join(d, "amm-checker.conf")
-            if os.path.isfile(fname):
-                with open(fname) as json_file:
-                    data = json.load(json_file)
-                    return data
+    fname = None
+    if len(sys.argv) > 1:
+        if os.path.isfile(sys.argv[1]):
+            fname = sys.argv[1]
+    else:
+        for d in os.path.expanduser("~"), os.curdir:
+            c_fname = os.path.join(d, "amm-checker.conf")
+            if os.path.isfile(c_fname):
+                fname = c_fname
+                break
+
+    if fname:
+        with open(fname) as json_file:
+            data = json.load(json_file)
+            return data
     return {}
 
 def parseConfig(cfg):
@@ -51,7 +60,6 @@ checkers = loadCheckers(w3)
 checkaccounts = cfg["checkaccounts"]
 
 parseConfig(cfg)
-
 
 for chk in checkaccounts:
     if len(checkaccounts[chk]) > 0:
