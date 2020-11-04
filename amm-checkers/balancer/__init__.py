@@ -109,11 +109,15 @@ def get_token_info(name, user, cfg=dict()):
 
     decimals = balancer_token_contract.functions.decimals().call()
 
+    print(balancer_token_user_supply)
+
     if 'token_amount' in cfg:
         balancer_token_user_supply = int(cfg['token_amount'] * (10**decimals))
 
     if 'token_amount_subtract' in cfg:
         balancer_token_user_supply -= int(cfg['token_amount_subtract'] * (10**decimals))
+
+    print(balancer_token_user_supply)
 
     token_shares = []
 
@@ -135,7 +139,7 @@ def get_token_info(name, user, cfg=dict()):
 def get_info_string(name, user, cfg=dict()):
     if 't' not in cfg:
         cfg['t'] = datetime.datetime.now()
-    token_shares = get_token_info(name.upper(), user, cfg)
+    token_shares = get_token_info(name.split()[0].upper(), user, cfg)
     ret_string = "%s\t%f %s + %f %s" % (str(cfg['t']), token_shares[0]['share'], token_shares[0]['name'], token_shares[1]['share'], token_shares[1]['name'])
     return [ret_string]
 

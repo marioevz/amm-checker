@@ -69,7 +69,7 @@ def get_token_info(name, user, cfg=dict()):
 def get_info_string(name, user, cfg=dict()):
     if 't' not in cfg:
         cfg['t'] = datetime.datetime.now()
-    eth_share, token_share = get_token_info(name.upper(), user, cfg)
+    eth_share, token_share = get_token_info(name.split()[0].upper(), user, cfg)
     ret_string = "%s\t%f %s + %f %s" % (str(cfg['t']),eth_share, 'ETH', token_share, token)
     return [ret_string]
 
