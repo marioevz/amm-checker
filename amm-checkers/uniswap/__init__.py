@@ -38,7 +38,7 @@ tokens = {
             },
 }
             
-def get_token_info(name, user):
+def get_token_info(name, user, cfg=dict()):
     if name not in tokens:
         raise ValueError('Token does not exist')
     token = tokens[name]
@@ -66,9 +66,11 @@ def get_token_info(name, user):
     
     return eth_share, token_share
         
-def get_info_string(name, user, t=datetime.datetime.now()):
-    eth_share, token_share = get_token_info(name.upper(), user)
-    ret_string = "%s\t%f %s + %f %s" % (str(t),eth_share, 'ETH', token_share, token)
+def get_info_string(name, user, cfg=dict()):
+    if 't' not in cfg:
+        cfg['t'] = datetime.datetime.now()
+    eth_share, token_share = get_token_info(name.upper(), user, cfg)
+    ret_string = "%s\t%f %s + %f %s" % (str(cfg['t']),eth_share, 'ETH', token_share, token)
     return [ret_string]
 
 def main():

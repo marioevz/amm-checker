@@ -97,7 +97,7 @@ pools = {
 }
 
             
-def get_token_info(name, user):
+def get_token_info(name, user, cfg=dict()):
     if name not in pools:
         raise ValueError('Pool does not exist')
     pool = pools[name]
@@ -106,6 +106,14 @@ def get_token_info(name, user):
 
     balancer_token_contract = w3.eth.contract(address=balancer_contract_address, abi=erc20_json)
     balancer_token_user_supply = balancer_token_contract.functions.balanceOf(user).call()
+
+    decimals = balancer_token_contract.functions.decimals().call()
+
+    if 'token_amount' in cfg:
+        balancer_token_user_supply = int(cfg['token_amount'] * (10**decimals))
+
+    if 'token_amount_subtract' in cfg:
+        balancer_token_user_supply -= int(cfg['token_amount_subtract'] * (10**decimals))
 
     token_shares = []
 
@@ -124,9 +132,11 @@ def get_token_info(name, user):
     
     return token_shares
         
-def get_info_string(name, user, t=datetime.datetime.now()):
-    token_shares = get_token_info(name.upper(), user)
-    ret_string = "%s\t%f %s + %f %s" % (str(t), token_shares[0]['share'], token_shares[0]['name'], token_shares[1]['share'], token_shares[1]['name'])
+def get_info_string(name, user, cfg=dict()):
+    if 't' not in cfg:
+        cfg['t'] = datetime.datetime.now()
+    token_shares = get_token_info(name.upper(), user, cfg)
+    ret_string = "%s\t%f %s + %f %s" % (str(cfg['t']), token_shares[0]['share'], token_shares[0]['name'], token_shares[1]['share'], token_shares[1]['name'])
     return [ret_string]
 
 def main():

@@ -73,10 +73,7 @@ for chk in checkaccounts:
             if checkaccounts[chk][acc][pair]:
                 c_cfg = {**c_cfg, **checkaccounts[chk][acc][pair]}
 
-            if c_cfg["t"]:
-                ret_str = checkers[chk].get_info_string(pair, acc, c_cfg["t"])
-            else:
-                ret_str = checkers[chk].get_info_string(pair, acc)
+            ret_str = checkers[chk].get_info_string(pair, acc, c_cfg)
             
             print(ret_str[0])
             if "output" in c_cfg and c_cfg["output"] and c_cfg["output"][0]!="stdout":
