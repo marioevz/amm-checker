@@ -7,7 +7,7 @@ import re
 import datetime
 from subprocess import Popen, PIPE, STDOUT
 
-def loadCheckers(_w3):
+def loadCheckers():
     res = {}
     lst = os.listdir(os.path.join(os.path.dirname(__file__), "amm-checkers"))
     dir = []
@@ -18,7 +18,6 @@ def loadCheckers(_w3):
     sys.path.append(os.path.dirname(__file__))
     for d in dir:
         res[d] = __import__("amm-checkers." + d, fromlist = ["*"])
-        res[d].init(_w3)
     return res
 
 def loadConfig():
@@ -55,28 +54,26 @@ syncObj = w3.eth.syncing
 if not isinstance(syncObj, bool):
     raise Exception("Node is syncing")
 
-checkers = loadCheckers(w3)
+checkers = loadCheckers()
 
-checkaccounts = cfg["checkaccounts"]
+checks = cfg["checks"]
 
 parseConfig(cfg)
 
-for chk in checkaccounts:
-    if len(checkaccounts[chk]) > 0:
-        print("=== %s" % checkers[chk].checker_name)
-    for acc in checkaccounts[chk]:
-        if len(checkaccounts[chk][acc]) > 0:
-            print(acc)
-        for pair in checkaccounts[chk][acc]:
-            c_cfg = cfg.copy()
+for chk in checks:
+    c_cfg = cfg.copy()
 
-            if checkaccounts[chk][acc][pair]:
-                c_cfg = {**c_cfg, **checkaccounts[chk][acc][pair]}
+    c_cfg = {**c_cfg, **chk}
 
-            ret_str = checkers[chk].get_info_string(pair, acc, c_cfg)
-            
-            print(ret_str[0])
-            if "output" in c_cfg and c_cfg["output"] and c_cfg["output"][0]!="stdout":
-                p = Popen(c_cfg["output"], stdin=PIPE)
-                p.communicate(input=bytes(ret_str[0], 'utf-8'))
+    if 'provider' not in c_cfg:
+        continue
+
+    checker = checkers[c_cfg['provider']].Checker(w3, c_cfg['contract'], c_cfg['tokens'])
+
+    ret_str = checker.get_info_string(c_cfg['account'], c_cfg)
+    
+    print(ret_str[0])
+    if "output" in c_cfg and c_cfg["output"] and c_cfg["output"][0]!="stdout":
+        p = Popen(c_cfg["output"], stdin=PIPE)
+        p.communicate(input=bytes(ret_str[0], 'utf-8'))
 
