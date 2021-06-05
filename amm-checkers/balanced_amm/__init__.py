@@ -22,6 +22,7 @@ class BalancedAMMPool:
 
         self.token_contract = self.w3.eth.contract(address=self.contract, abi=self.erc20_json)
         self.decimals = self.token_contract.functions.decimals().call()
+
         for token in self.tokens:
             assert 'address' in token, "token does not contain address"
             assert 'name' in token, "token does not contain name"
@@ -43,6 +44,8 @@ class BalancedAMMPool:
 
         return amm_token_total_supply, token_user_supply
 
+    def get_token_pool_total_holdings(self, user, token_contract, cfg=dict()):
+        return token_contract.functions.balanceOf(self.contract).call()
 
     def get_token_info(self, user, cfg=dict()):
 
@@ -56,7 +59,7 @@ class BalancedAMMPool:
                     token_contract = token['token_contract']
                     token_decimals = token_contract.functions.decimals().call()
 
-                    token_total_holdings = token_contract.functions.balanceOf(self.contract).call()
+                    token_total_holdings = self.get_token_pool_total_holdings(user, token_contract, cfg)
 
                     token_share = token_total_holdings * (token_user_supply / amm_token_total_supply) / (10**token_decimals)
                     token_shares.append({'name': token['name'], 'share': token_share})
