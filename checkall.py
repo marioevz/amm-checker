@@ -68,6 +68,9 @@ for chk in checks:
     if 'provider' not in c_cfg:
         continue
 
+    if '_comment' in c_cfg and c_cfg['_comment'] == True:
+        continue
+
     checker = checkers[c_cfg['provider']].Checker(w3, c_cfg['contract'], c_cfg['tokens'])
 
     ret_str = checker.get_info_string(c_cfg['account'], c_cfg)

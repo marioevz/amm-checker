@@ -37,6 +37,9 @@ class BalancedAMMPool:
         if 'token_amount' in cfg:
             token_user_supply = int(cfg['token_amount'] * (10**self.decimals))
 
+        if 'include_token_amount' in cfg:
+            token_user_supply += self.w3.eth.contract(address=cfg['include_token_amount'], abi=self.erc20_json).functions.balanceOf(user).call()
+
         if 'token_amount_subtract' in cfg:
             token_user_supply -= int(cfg['token_amount_subtract'] * (10**self.decimals))
 
